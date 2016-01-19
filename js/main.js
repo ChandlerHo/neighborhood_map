@@ -24,84 +24,76 @@ var viewModel = function() {
   var self = this;
   
   
-  // Build the Google Map object. Store a reference to it.
-  
+// build map  
   self.googleMap = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 37.781, lng:-122.414},
     zoom: 14
   });
-  // data from an API like FourSquare. Place objects are defined by a custom
-  // constructor function you write, which takes what you need from the original
-  // data and also lets you add on anything else you need for your app, not
-  // limited by the original data.
+
+// build data
   self.allPlaces = [];
   locationData.forEach(function(place) {
     self.allPlaces.push(new Place(place));
   });
   
   
-  // Build Markers via the Maps API and place them on the map.
+//build marker
   self.allPlaces.forEach(function(place) {
     var markerOptions = {
       map: self.googleMap,
       position: place.latLng
     };
-    
     place.marker = new google.maps.Marker(markerOptions);
-    place.infoWindow = new google.maps.InfoWindow({
-      content: place.locationName
-    });
-    place.marker.addListener('click', function() {
-      place.infoWindow.open(self.googleMap, place.marker);
-    })
-    
-    // You might also add listeners onto the marker, such as "click" listeners.
-  });
-  
-  // build wiki
-  self.allPlaces.forEach(function(place) {
+
+    //ajax wiki
     var wikiUrl =  'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + place.locationName + '&format=json&callback=wikiCallback';
+    var articleStr;
+    var wikiLink;
     $.ajax({
         url: wikiUrl,
         dataType: "jsonp",
         // jsonp: "callback",
         success: function(response) {
-          console.log(response);
+          var articleList = response[1];
+            for(var i = 0; i < articleList.length; i++) {
+                articleStr = articleList[i];
+                if(articleStr === undefined) {
+                  articleStr = "unable to find look up";
+                }
+                wikiLink = 'http://en.wikipedia.org/wiki/' + articleStr;
+            }
         }
-    })
+    });
 
+    var contentString = '<div>'+ place.locationName + '</div>' + '<div>' + wikiLink + '</div>'
+    //Build infowindow
+    place.infoWindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+    //add eventlisten for clicking marker
+    place.marker.addListener('click', function() {
+      place.infoWindow.open(self.googleMap, place.marker);
+    })
+    
   });
-  
-  // This array will contain what its name implies: only the markers that should
-  // be visible based on user input. My solution does not need to use an 
-  // observableArray for this purpose, but other solutions may require that.
+  // filtered list
   self.visiblePlaces = ko.observableArray();
-  
-  
-  // All places should be visible at first. We only want to remove them if the
-  // user enters some input which would filter some of them out.
+  //make all place visible
   self.allPlaces.forEach(function(place) {
     self.visiblePlaces.push(place);
   });
   
-  
-  // This, along with the data-bind on the <input> element, lets KO keep 
-  // constant awareness of what the user has entered. It stores the user's 
-  // input at all times.
+  //this is user input for filter
   self.userInput = ko.observable('');
   
   
-  // The filter will look at the names of the places the Markers are standing
-  // for, and look at the user input in the search box. If the user input string
-  // can be found in the place name, then the place is allowed to remain 
-  // visible. All other markers are removed.
-  self.filterMarkers = function() {
+  //making filter marker
+    self.filterMarkers = function() {
     var searchInput = self.userInput().toLowerCase();
     
     self.visiblePlaces.removeAll();
     
-    // This looks at the name of each places and then determines if the user
-    // input can be found within the place name.
+    
     self.allPlaces.forEach(function(place) {
       place.marker.setVisible(false);
       
@@ -116,13 +108,10 @@ var viewModel = function() {
     });
   };
   
-  
+  //create Place
   function Place(dataObj) {
     this.locationName = dataObj.locationName;
     this.latLng = dataObj.latLng;
-    
-    // You will save a reference to the Places' map marker after you build the
-    // marker:
     this.marker = null;
   }
   
