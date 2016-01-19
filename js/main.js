@@ -30,8 +30,6 @@ var viewModel = function() {
     center: {lat: 37.781, lng:-122.414},
     zoom: 14
   });
-  
-    // Build "Place" objects out of raw place data. It is common to receive place
   // data from an API like FourSquare. Place objects are defined by a custom
   // constructor function you write, which takes what you need from the original
   // data and also lets you add on anything else you need for your app, not
@@ -50,6 +48,12 @@ var viewModel = function() {
     };
     
     place.marker = new google.maps.Marker(markerOptions);
+    place.infoWindow = new google.maps.InfoWindow({
+      content: place.locationName
+    });
+    place.marker.addListener('click', function() {
+      place.infoWindow.open(self.googleMap, place.marker);
+    })
     
     // You might also add listeners onto the marker, such as "click" listeners.
   });
