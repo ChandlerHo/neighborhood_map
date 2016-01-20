@@ -47,25 +47,15 @@ var viewModel = function() {
 
     //ajax wiki
     var wikiUrl =  'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + place.locationName + '&format=json&callback=wikiCallback';
-    var articleStr;
-    var wikiLink;
     $.ajax({
         url: wikiUrl,
         dataType: "jsonp",
         // jsonp: "callback",
         success: function(response) {
-          var articleList = response[1];
-            for(var i = 0; i < articleList.length; i++) {
-                articleStr = articleList[i];
-                if(articleStr === undefined) {
-                  articleStr = "unable to find look up";
-                }
-                wikiLink = 'http://en.wikipedia.org/wiki/' + articleStr;
-            }
         }
     });
 
-    var contentString = '<div>'+ place.locationName + '</div>' + '<div>' + wikiLink + '</div>'
+    var contentString = '<div>'+ place.locationName + '</div>' + '<div>' + ' ' + '</div>';
     //Build infowindow
     place.infoWindow = new google.maps.InfoWindow({
       content: contentString
@@ -73,8 +63,12 @@ var viewModel = function() {
     //add eventlisten for clicking marker
     place.marker.addListener('click', function() {
       place.infoWindow.open(self.googleMap, place.marker);
-    })
-    
+      place.marker.setAnimation(google.maps.Animation.BOUNCE);
+      setInterval(function() {
+        place.infoWindow.close();
+        place.marker.setAnimation(null);
+      }, 2000);
+    });
   });
   // filtered list
   self.visiblePlaces = ko.observableArray();
@@ -107,6 +101,16 @@ var viewModel = function() {
       place.marker.setVisible(true);
     });
   };
+
+  //making list click
+  self.itemClick = function(place) {
+    place.infoWindow.open(self.googleMap, place.marker);
+      place.marker.setAnimation(google.maps.Animation.BOUNCE);
+      setInterval(function() {
+        place.infoWindow.close();
+        place.marker.setAnimation(null);
+      }, 2000);
+  }
   
   //create Place
   function Place(dataObj) {

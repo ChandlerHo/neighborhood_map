@@ -11,7 +11,7 @@
 	<div id="map"></div>
     <input type="search" data-bind="textInput: userInput, event: {keyup: filterMarkers}">
     <ul id="list-view" data-bind="foreach: visiblePlaces">
-      <li data-bind="text: locationName"></li>
+      <li data-bind="text: locationName, click: $root.itemClick"></li>
     </ul>
 	<style type="text/css">
 	</style>
