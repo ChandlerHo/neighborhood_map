@@ -47,19 +47,23 @@ var viewModel = function() {
 
     //ajax wiki
     var wikiUrl =  'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + place.locationName + '&format=json&callback=wikiCallback';
+    var information;
     $.ajax({
         url: wikiUrl,
         dataType: "jsonp",
         // jsonp: "callback",
         success: function(response) {
+          var articleList = response[2];
+          if(!articleList) {
+            articleList = "Unable to find resource";
+          }
+          var contentString = '<div>'+ place.locationName + '</div>' + '<div>' + articleList + '</div>';
+          place.infoWindow = new google.maps.InfoWindow({
+            content: contentString
+          });
         }
-    });
-
-    var contentString = '<div>'+ place.locationName + '</div>' + '<div>' + ' ' + '</div>';
+    }).fail();
     //Build infowindow
-    place.infoWindow = new google.maps.InfoWindow({
-      content: contentString
-    });
     //add eventlisten for clicking marker
     place.marker.addListener('click', function() {
       place.infoWindow.open(self.googleMap, place.marker);
