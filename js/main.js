@@ -23,7 +23,6 @@ var locationData = [
 var viewModel = function() {
   var self = this;
   
-  
 // build map  
   self.googleMap = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 37.781, lng:-122.414},
@@ -54,15 +53,18 @@ var viewModel = function() {
         // jsonp: "callback",
         success: function(response) {
           var articleList = response[2];
-          if(!articleList) {
-            articleList = "Unable to find resource";
-          }
           var contentString = '<div>'+ place.locationName + '</div>' + '<div>' + articleList + '</div>';
           place.infoWindow = new google.maps.InfoWindow({
             content: contentString
           });
         }
-    }).fail();
+    }).fail(function() {
+          var articleList = 'unable to load wikipedia resource';
+          var contentString = '<div>'+ place.locationName + '</div>' + '<div>' + articleList + '</div>';
+          place.infoWindow = new google.maps.InfoWindow({
+            content: contentString
+          });
+    });
     //Build infowindow
     //add eventlisten for clicking marker
     place.marker.addListener('click', function() {
@@ -83,7 +85,6 @@ var viewModel = function() {
   
   //this is user input for filter
   self.userInput = ko.observable('');
-  
   
   //making filter marker
     self.filterMarkers = function() {
@@ -114,7 +115,7 @@ var viewModel = function() {
         place.infoWindow.close();
         place.marker.setAnimation(null);
       }, 2000);
-  }
+  };
   
   //create Place
   function Place(dataObj) {
@@ -122,7 +123,8 @@ var viewModel = function() {
     this.latLng = dataObj.latLng;
     this.marker = null;
   }
-  
 };
-
-ko.applyBindings(new viewModel());
+var initMap = function() {
+  ko.applyBindings(new viewModel());
+}
+initMap();
