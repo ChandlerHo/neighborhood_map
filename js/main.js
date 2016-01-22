@@ -8,7 +8,7 @@ var locationData = [
 		latLng: {lat: 37.789,lng: -122.401}
 	},
 	{
-		locationName: 'Powell St. Station',
+		locationName: 'Powell Street Station',
 		latLng: {lat: 37.785, lng: -122.407}
 	},
 	{
@@ -16,7 +16,7 @@ var locationData = [
 		latLng: {lat: 37.780,lng: -122.414}
 	},
 	{
-		locationName: '16th St. Mission Station',
+		locationName: '16th Street Mission',
 		latLng: {lat: 37.765,lng: -122.420}
 	}
 ];
@@ -126,5 +126,4 @@ var viewModel = function() {
 };
 var initMap = function() {
   ko.applyBindings(new viewModel());
-}
-initMap();
+};
