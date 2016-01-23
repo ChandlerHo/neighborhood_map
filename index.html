@@ -9,20 +9,20 @@
 	<style type="text/css"></style>
 </head>
 <body>
-	<div class = "container">
-	<div class = "row">
-		<div class="search">
+	<div id = "wrapper">
+		<div id="sidebar-wrapper">
 		    <input type="search" placeholder="search" data-bind="textInput: userInput, event: {keyup: filterMarkers}">
-		    <ul data-bind="foreach: visiblePlaces">
-		      <li data-bind="text: locationName, click: $root.itemClick"></li>
-		    </ul>
+		    	<ul data-bind="foreach: visiblePlaces">
+		      		<li data-bind="text: locationName, click: $root.itemClick,"></li>
+		    	</ul>
 		</div>
 		<div id = "map-container">
+			<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
 			<div id="map"></div>
 		</div>
 	</div>
 	</div>
-	<script src="js/libs/knockout.js"></script>
+    <script src="js/libs/knockout.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKjaohLEqRd2BPlitwZ8ikdQm02i6s6As&callback=initMap&libraries=places" async defer></script>
 	<script src="js/main.js"></script>
 	<script src="js/libs/jquery-1.11.3.min.js"></script>

@@ -16,7 +16,7 @@ var locationData = [
 		latLng: {lat: 37.780,lng: -122.414}
 	},
 	{
-		locationName: '16th Street Mission',
+		locationName: '16th Street Mission Station',
 		latLng: {lat: 37.765,lng: -122.420}
 	}
 ];
@@ -28,6 +28,12 @@ var viewModel = function() {
     center: {lat: 37.781, lng:-122.414},
     zoom: 14
   });
+  self.clearMap = function(){
+    self.allPlaces.forEach(function() {
+      place.infoWindow.close();
+      place.marker.setAnimation(null);
+    });
+  };
 
 // build data
   self.allPlaces = [];
@@ -36,6 +42,7 @@ var viewModel = function() {
   });
   
   
+  var lastPlace = "";
 //build marker
   self.allPlaces.forEach(function(place) {
     var markerOptions = {
@@ -68,12 +75,13 @@ var viewModel = function() {
     //Build infowindow
     //add eventlisten for clicking marker
     place.marker.addListener('click', function() {
+      if(lastPlace) {
+        lastPlace.infoWindow.close();
+        lastPlace.marker.setAnimation(null);
+      }
       place.infoWindow.open(self.googleMap, place.marker);
       place.marker.setAnimation(google.maps.Animation.BOUNCE);
-      setInterval(function() {
-        place.infoWindow.close();
-        place.marker.setAnimation(null);
-      }, 2000);
+      lastPlace=place;
     });
   });
   // filtered list
@@ -101,7 +109,6 @@ var viewModel = function() {
       }
     });
     
-    
     self.visiblePlaces().forEach(function(place) {
       place.marker.setVisible(true);
     });
@@ -109,12 +116,13 @@ var viewModel = function() {
 
   //making list click
   self.itemClick = function(place) {
+    if(lastPlace) {
+      lastPlace.infoWindow.close();
+      lastPlace.marker.setAnimation(null);
+    }
     place.infoWindow.open(self.googleMap, place.marker);
-      place.marker.setAnimation(google.maps.Animation.BOUNCE);
-      setInterval(function() {
-        place.infoWindow.close();
-        place.marker.setAnimation(null);
-      }, 2000);
+    place.marker.setAnimation(google.maps.Animation.BOUNCE);
+      lastPlace = place;
   };
   
   //create Place
