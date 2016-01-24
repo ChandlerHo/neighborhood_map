@@ -16,18 +16,20 @@ var locationData = [
 		latLng: {lat: 37.780,lng: -122.414}
 	},
 	{
-		locationName: '16th Street Mission Station',
+		locationName: '16th Street Mission',
 		latLng: {lat: 37.765,lng: -122.420}
 	}
 ];
 var viewModel = function() {
   var self = this;
   
-// build map  
+  // build map  
   self.googleMap = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 37.781, lng:-122.414},
     zoom: 14
   });
+  self.bounds = new google.maps.LatLngBounds();
+  self.googleMap.fitBounds(self.bounds);
   self.clearMap = function(){
     self.allPlaces.forEach(function() {
       place.infoWindow.close();
@@ -40,8 +42,6 @@ var viewModel = function() {
   locationData.forEach(function(place) {
     self.allPlaces.push(new Place(place));
   });
-  
-  
   var lastPlace = "";
 //build marker
   self.allPlaces.forEach(function(place) {
@@ -50,6 +50,10 @@ var viewModel = function() {
       position: place.latLng
     };
     place.marker = new google.maps.Marker(markerOptions);
+
+    //create coordiniate holder to set boundary
+    var coordinate = new google.maps.LatLng(place.latLng);
+    self.bounds.extend(coordinate);
 
     //ajax wiki
     var wikiUrl =  'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + place.locationName + '&format=json&callback=wikiCallback';
@@ -66,11 +70,9 @@ var viewModel = function() {
           });
         }
     }).fail(function() {
-          var articleList = 'unable to load wikipedia resource';
-          var contentString = '<div>'+ place.locationName + '</div>' + '<div>' + articleList + '</div>';
-          place.infoWindow = new google.maps.InfoWindow({
-            content: contentString
-          });
+        place.infoWindow = new google.maps.InfoWindow({
+          content: "unable to find"
+        });
     });
     //Build infowindow
     //add eventlisten for clicking marker
@@ -84,6 +86,7 @@ var viewModel = function() {
       lastPlace=place;
     });
   });
+
   // filtered list
   self.visiblePlaces = ko.observableArray();
   //make all place visible
@@ -95,24 +98,24 @@ var viewModel = function() {
   self.userInput = ko.observable('');
   
   //making filter marker
-    self.filterMarkers = function() {
-    var searchInput = self.userInput().toLowerCase();
+  self.filterMarkers = function() {
+  var searchInput = self.userInput().toLowerCase();
     
-    self.visiblePlaces.removeAll();
+  self.visiblePlaces.removeAll();
     
     
-    self.allPlaces.forEach(function(place) {
-      place.marker.setVisible(false);
+  self.allPlaces.forEach(function(place) {
+    place.marker.setVisible(false);
       
-      if (place.locationName.toLowerCase().indexOf(searchInput) !== -1) {
-        self.visiblePlaces.push(place);
-      }
-    });
+    if (place.locationName.toLowerCase().indexOf(searchInput) !== -1) {
+      self.visiblePlaces.push(place);
+    }
+  });
     
-    self.visiblePlaces().forEach(function(place) {
-      place.marker.setVisible(true);
-    });
-  };
+  self.visiblePlaces().forEach(function(place) {
+    place.marker.setVisible(true);
+  });
+};
 
   //making list click
   self.itemClick = function(place) {
