@@ -23,19 +23,22 @@ var locationData = [
 var viewModel = function() {
   var self = this;
   
-  // build map  
+  // build map 
   self.googleMap = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 37.781, lng:-122.414},
     zoom: 14
   });
+  //set boundary base on markers later
   self.bounds = new google.maps.LatLngBounds();
   self.googleMap.fitBounds(self.bounds);
+
   self.clearMap = function(){
     self.allPlaces.forEach(function() {
       place.infoWindow.close();
       place.marker.setAnimation(null);
     });
   };
+
 
 // build data
   self.allPlaces = [];
@@ -133,6 +136,10 @@ var viewModel = function() {
     this.locationName = dataObj.locationName;
     this.latLng = dataObj.latLng;
     this.marker = null;
+  }
+  //google map error handler
+  function googleError() {
+    document.getElementById('map').append('unable to load map');
   }
 };
 var initMap = function() {
