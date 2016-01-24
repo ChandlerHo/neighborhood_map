@@ -138,10 +138,10 @@ var viewModel = function() {
     this.marker = null;
   }
   //google map error handler
-  function googleError() {
-    document.getElementById('map').append('unable to load map');
-  }
 };
+function googleError() {
+    ('#map').append('unable to load map');
+}
 var initMap = function() {
   ko.applyBindings(new viewModel());
 };
