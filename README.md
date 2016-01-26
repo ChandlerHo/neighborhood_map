@@ -6,4 +6,3 @@ Project 5
 3. type in search word to filter list
 4. click on list to get wikipedia information
 
-AIzaSyAKjaohLEqRd2BPlitwZ8ikdQm02i6s6As
