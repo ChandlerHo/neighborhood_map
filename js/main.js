@@ -140,7 +140,8 @@ var viewModel = function() {
   //google map error handler
 };
 function googleError() {
-    ('#map').append('unable to load map');
+  console.log("error");
+  $('#map').append("Unable to load google map");
 }
 var initMap = function() {
   ko.applyBindings(new viewModel());
