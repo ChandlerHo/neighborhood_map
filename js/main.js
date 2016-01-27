@@ -86,6 +86,8 @@ var viewModel = function() {
       }
       place.infoWindow.open(self.googleMap, place.marker);
       place.marker.setAnimation(google.maps.Animation.BOUNCE);
+    //Toggles when info window opens
+      $("#wrapper").addClass("toggled");
       lastPlace=place;
     });
   });
@@ -122,13 +124,14 @@ var viewModel = function() {
 
   //making list click
   self.itemClick = function(place) {
+    $("#wrapper").addClass("toggled");
     if(lastPlace) {
       lastPlace.infoWindow.close();
       lastPlace.marker.setAnimation(null);
     }
     place.infoWindow.open(self.googleMap, place.marker);
     place.marker.setAnimation(google.maps.Animation.BOUNCE);
-      lastPlace = place;
+    lastPlace = place;
   };
   
   //create Place
