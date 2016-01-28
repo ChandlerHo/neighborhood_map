@@ -26,7 +26,7 @@ var viewModel = function() {
   // build map 
   self.googleMap = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 37.781, lng:-122.414},
-    zoom: 14
+    zoom: 13
   });
   //set boundary base on markers later
   self.bounds = new google.maps.LatLngBounds();
@@ -38,7 +38,6 @@ var viewModel = function() {
       place.marker.setAnimation(null);
     });
   };
-
 
 // build data
   self.allPlaces = [];
@@ -68,13 +67,12 @@ var viewModel = function() {
         success: function(response) {
           var articleList = response[2];
           var contentString = '<div>'+ place.locationName + '</div>' + '<div>' + articleList + '</div>';
-          place.infoWindow = new google.maps.InfoWindow({
-            content: contentString
-          });
+          place.infoWindow = new google.maps.InfoWindow({maxWidth: 200});
+          place.infoWindow.setContent(contentString);
         }
     }).fail(function() {
         place.infoWindow = new google.maps.InfoWindow({
-          content: "unable to find"
+          content: "Cannot communicate with Wikipedia at this time. Please check your internet connection and try again"
         });
     });
     //Build infowindow
@@ -86,8 +84,6 @@ var viewModel = function() {
       }
       place.infoWindow.open(self.googleMap, place.marker);
       place.marker.setAnimation(google.maps.Animation.BOUNCE);
-    //Toggles when info window opens
-      $("#wrapper").addClass("toggled");
       lastPlace=place;
     });
   });
@@ -124,7 +120,6 @@ var viewModel = function() {
 
   //making list click
   self.itemClick = function(place) {
-    $("#wrapper").addClass("toggled");
     if(lastPlace) {
       lastPlace.infoWindow.close();
       lastPlace.marker.setAnimation(null);
@@ -144,7 +139,7 @@ var viewModel = function() {
 };
 function googleError() {
   console.log("error");
-  $('#map').append("Unable to load google map");
+  $('#map').append("Check your internet connection");
 }
 var initMap = function() {
   ko.applyBindings(new viewModel());
