@@ -22,7 +22,6 @@ var locationData = [
 ];
 var viewModel = function() {
   var self = this;
-  
   // build map 
   self.googleMap = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 37.781, lng:-122.414},
@@ -31,14 +30,24 @@ var viewModel = function() {
   //set boundary base on markers later
   self.bounds = new google.maps.LatLngBounds();
   self.googleMap.fitBounds(self.bounds);
-
+  // build toogle
   self.clearMap = function(){
     self.allPlaces.forEach(function() {
       place.infoWindow.close();
       place.marker.setAnimation(null);
     });
   };
-
+  // toogle
+  self.isMenuOpen = ko.observable(false);
+  self.hideMenu = function() {
+    self.isMenuOpen(false);
+    return true;
+  }
+  self.toogleMenu = function() {
+    var state = !(this.isMenuOpen());
+    self.isMenuOpen(state);
+  }
+  
 // build data
   self.allPlaces = [];
   locationData.forEach(function(place) {

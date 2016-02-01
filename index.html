@@ -8,31 +8,24 @@
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
-	<div id="wrapper">
-		<div id="sidebar-wrapper">
+	<header data-bind="click: hideMenu">
+		<a data-bind="click: toogleMenu, clickBubble: false">
+			☰
+		</a>
+	</header>
+	<main class="main">
+		<div class="menu" data-bind="visible: isMenuOpen(), click: null, clickBubble: false">
 		    <input type="search" placeholder="search" data-bind="textInput: userInput, event: {keyup: filterMarkers}">
 		    	<ul data-bind="foreach: visiblePlaces">
 		      		<li data-bind="text: locationName, click: $root.itemClick,"></li>
 		    	</ul>
 		</div>
-		<div class = "map-container">
-			<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
-			<div id="map"></div>
+		<div id="map" data-bind="click: hideMenu">
 		</div>
 	</div>
     <script src="js/libs/knockout.js"></script>
 	<script src="js/libs/jquery-1.11.3.min.js"></script>
 	<script src="js/main.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKjaohLEqRd2BPlitwZ8ikdQm02i6s6As&callback=initMap&libraries=places" onerror="googleError()" async defer></script>
-	<script>
-    	$("#menu-toggle").click(function(e) {
-        	e.preventDefault();
-        	$("#wrapper").toggleClass("toggled");
-    	});
-    	$("#sidebar-wrapper").click(function(e) {
-    		e.preventDefault();
-        	$("#wrapper").toggleClass("toggled");
-    	});
-    </script>
 </body>
 </html>
