@@ -42,12 +42,12 @@ var viewModel = function() {
   self.hideMenu = function() {
     self.isMenuOpen(false);
     return true;
-  }
+  };
   self.toogleMenu = function() {
     var state = !(this.isMenuOpen());
     self.isMenuOpen(state);
-  }
-  
+  };
+
 // build data
   self.allPlaces = [];
   locationData.forEach(function(place) {
@@ -72,6 +72,14 @@ var viewModel = function() {
     $.ajax({
         url: wikiUrl,
         dataType: "jsonp",
+        timeout: 1000,
+        error: function(x,t,m) {
+          if(t==="timeout") {
+            place.infoWindow = new google.maps.InfoWindow({
+            content: "Cannot communicate with Wikipedia at this time. Please check your internet connection and try again"
+            });
+          };
+        },
         // jsonp: "callback",
         success: function(response) {
           var articleList = response[2];
@@ -147,8 +155,7 @@ var viewModel = function() {
   //google map error handler
 };
 function googleError() {
-  console.log("error");
-  $('#map').append("Check your internet connection");
+  alert("Check you internet connection");
 }
 var initMap = function() {
   ko.applyBindings(new viewModel());
